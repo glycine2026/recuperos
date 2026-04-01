@@ -122,7 +122,11 @@ def create_excel(df):
     for row_idx, row_data in enumerate(df.itertuples(index=False), 2):
         fill = alt_fill if row_idx % 2 == 0 else None
         for col_idx, value in enumerate(row_data, 1):
-            cell = ws.cell(row=row_idx, column=col_idx, value=value if value != "" else None)
+            if isinstance(value, (list, tuple)):
+                value = ", ".join(str(v) for v in value)
+            if isinstance(value, str) and value.strip() == "":
+                value = None
+            cell = ws.cell(row=row_idx, column=col_idx, value=value)
             cell.font      = Font(name="Arial", size=10)
             cell.border    = cell_border
             cell.alignment = left_align
